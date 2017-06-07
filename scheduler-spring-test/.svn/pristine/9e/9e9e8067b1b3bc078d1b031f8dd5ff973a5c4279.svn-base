@@ -1,0 +1,70 @@
+# language: pt_br  
+# POPRH - Programa Otimização de Produtividade dos Empregados
+# Backlog - 013, 014
+
+Funcionalidade: Alterar Ação do Programa
+    Eu como RHCorp e SubComitê
+    Desejo Alterar a Ação do Programa
+    A fim de manter a Ação durante o programa de produtividade dos empregados
+	
+	Esquema do Cenário: Alterar uma Acao validando o preenchimento do nome da Acao
+    Dado uma Acao cadastrada
+    Quando informo o nome da Acao <acao>
+    Quando tento alterar a Acao
+    Então <resultado>
+    Exemplos: considera espaços à esquerda e a direita
+       |           acao          |            resultado             |
+       | "AÇÃO 2015"             | A Ação foi alterada com sucesso. |
+       | "AÇÃO    2015"          | A Ação foi alterada com sucesso. |
+       | "32323"                 | A Ação foi alterada com sucesso. |
+       | "Alteração AÇÃO - 32323"| A Ação foi alterada com sucesso. |
+       | "C%¨&Ç^`^^^"            | A Ação foi alterada com sucesso. |	
+    
+	Esquema do Cenário: Alterar uma Acao no programa validando regras de preenchimento
+ 	Dado uma acao cadastrada:
+		|        acao         |  Status   |
+		|       AÇÃO25        |   Ativo   |
+     E a informação obrigatória <informacao_obrigatoria> da acao tem seu valor alterado para o valor <valor>
+     Quando tento alterar a Acao 
+	 Então <resultado>
+	 Exemplos: 
+       | informacao_obrigatoria   |         valor      |            resultado                                   |
+	   |  Acao                    | ""                 | falha:O preenchimento da ação é obrigatório.           |
+       |  Acao                    | " "                | falha:O preenchimento da ação é obrigatório.           |
+       |  Acao                    | "AÇÃO1"            | A Ação foi alterada com sucesso.                       |
+       |  Status                  | ""                 | falha:O preenchimento do status da ação é obrigatório. |
+       |  Status                  | " "                | falha:O preenchimento do status da ação é obrigatório. |
+       |  Status                  | "Ativo"            | A Ação foi alterada com sucesso.                       |       
+	   |  Status                  | "Inativo"          | A Ação foi alterada com sucesso.                       |
+
+	Cenário: Alterar Acao validando a empresa associada
+ 	 Dado uma Acao cadastrada 
+	 Quando tento Alterar Acao associada a própria empresa
+	 Quando tento alterar a Acao
+	 Então A Ação foi alterada com sucesso.
+	 
+#	Cenário: Alterar Acao validando a empresa associada
+# 	 Dado uma Alteração de Acao 
+#	 Quando tento Alterar Acao não associada a empresa
+#	Então falha: Alteração não realizada.
+
+	Cenário: Alterar Acao validando duplicidade do nome da Acao
+ 	 Dado uma Acao cadastrada
+	 Quando tento Alterar Acao com um mesmo nome já cadastrado.
+	 Então falha:A ação já existe.
+
+	Cenário: Alterar Acao validando status da Acao
+     Dado uma Acao inativa
+	 Quando tento ativar uma Acao
+     Então Ativação realizada com sucesso
+	
+#	Cenário: Alterar Ação validando status da Ação
+#     Dado uma Ação ativa com algum plano de ação iniciado
+#	 Quando tento inativar uma Ação
+#     Então falha: Ativação não realizada 
+    
+#	Cenário: Alterar Ação validando status da Ação
+#     Dado uma Ação ativa sem plano de ação iniciado
+#	 Quando tento inativar uma Ação
+#     Então Ativação realizada com sucesso
+   

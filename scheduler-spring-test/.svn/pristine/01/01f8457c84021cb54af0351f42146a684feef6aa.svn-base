@@ -1,0 +1,64 @@
+package com.elton.ap.criterioAceitacao.cucumber.stepdefs;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.elton.app.dto.CompanyDTO;
+import com.elton.app.service.CompanyService;
+import com.elton.app.util.SgemBaseIntTest;
+import com.elton.app.utils.factory.EmpresaMother;
+
+import cucumber.api.java.pt.Dado;
+import cucumber.api.java.pt.Entao;
+import cucumber.api.java.pt.Quando;
+
+public class EmpresaStepDefs extends SgemBaseIntTest {
+
+	@Autowired
+	private CompanyService service;
+
+	private static Map<String, String> mapaCampos = new HashMap<String, String>();
+
+	static {
+		mapaCampos.put("Empresa", "setNomeFantasia");
+		mapaCampos.put("RazaoSocial", "setRazaoSocial");
+	}
+
+	private CompanyDTO model = new CompanyDTO();
+
+	@Override
+	public Map<String, String> getMapaCampos() {
+		return mapaCampos;
+	}
+
+	@Dado("^uma Empresa em registro$")
+	public void uma_Empresa_em_registro() throws Throwable {
+		model = EmpresaMother.getCompanyDTO();
+	}
+
+	@Quando("^informo o nome da Empresa \"([^\"]*)\"$")
+	public void informo_o_nome_da_Empresa(final String novoNome) throws Throwable {
+		model.setFantasyName(novoNome);
+	}
+
+	@Quando("^tento salvar a Empresa$")
+	public void tento_salvar_a_Empresa() throws Throwable {
+		try {
+			model = service.persist(model);
+		} catch (final RuntimeException ex) {
+			//tratarErrosDeExcecao(ex);
+		}
+	}
+
+	@Entao("^A Empresa foi incluida com sucesso$")
+	public void inclusao_realizada_com_sucesso() throws Throwable {
+		//Assert.assertNotNull(model.getId());
+	}
+
+	@Entao("^falha:O preenchimento do status é obrigatório.$")
+	public void falha_o_Status_do_Fator_e_obrigatorio() throws Throwable {
+		//assertTrue(verificaRetornoExcecao("msg.erro.fatorInfluenciador.status.obrigatorio"));
+	}
+}

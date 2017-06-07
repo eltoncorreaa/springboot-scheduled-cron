@@ -1,0 +1,45 @@
+package com.elton.app.converter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.elton.app.dto.CompanyDTO;
+import com.elton.app.model.Company;
+
+
+public class CompanyConverter {
+
+	public static Company toCompany(final CompanyDTO dto) {
+		final Company company = new Company();
+		company.setId(dto.getId());
+		company.setCnpj(dto.getCnpj()!=null?dto.getCnpj().trim():null);
+		company.setStateInscription(dto.getStateInscription()!=null?dto.getStateInscription().trim():null);
+		company.setFantasyName(dto.getFantasyName()!=null?dto.getFantasyName().trim():null);
+		company.setSocialReason(dto.getSocialReason()!=null?dto.getSocialReason().trim():null);
+		company.setVersion(dto.getVersion());
+		company.setCreationTime(dto.getCreationTime());
+		return company;
+	}
+
+	public static CompanyDTO toCompanyDTO(final Company company) {
+		final CompanyDTO model = new CompanyDTO();
+		model.setId(company.getId());
+		model.setCnpj(company.getCnpj());
+		model.setStateInscription(company.getStateInscription());
+		model.setFantasyName(company.getFantasyName());
+		model.setSocialReason(company.getSocialReason());
+		model.setVersion(company.getVersion());
+		model.setCreationTime(company.getCreationTime());
+		return model;
+	}
+
+	public static List<CompanyDTO> toListCompanyDTO(final List<Company> lista) {
+		final List<CompanyDTO> listCompanyDTO= new ArrayList<>();
+		if (lista!= null){
+			for (final Company company : lista) {
+				listCompanyDTO.add(toCompanyDTO(company));
+			}
+		}
+		return listCompanyDTO;
+	}
+}

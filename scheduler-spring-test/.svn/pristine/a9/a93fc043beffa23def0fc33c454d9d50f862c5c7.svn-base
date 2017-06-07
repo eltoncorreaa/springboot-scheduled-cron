@@ -1,0 +1,21 @@
+# language: pt_br  
+
+
+Funcionalidade: Incluir Empresa no Sistema
+    Eu como Administrador do Sistema
+    Desejo Incluir a Empresa
+    A fim de manter a Empresa durante o tempo de atividade da mesma
+	
+	Esquema do Cenario: Incluir uma Empresa validando o preenchimento do nome da Empresa
+    Dado uma Empresa em registro
+    Quando informo o nome da Empresa <empresa>
+    Quando tento salvar a Empresa
+    Entao <resultado>
+    Exemplos: considera espaços à esquerda e a direita
+       |       empresa           |            resultado               |
+       | "Empresa 2015"          | A Empresa foi incluida com sucesso |
+       | "Empresa   2015"        | A Empresa foi incluida com sucesso |
+       | "32323"                 | A Empresa foi incluida com sucesso |
+       | "Inclusao teste"        | A Empresa foi incluida com sucesso |
+       | "4dsfsdfsdf"            | A Empresa foi incluida com sucesso |	   
+    

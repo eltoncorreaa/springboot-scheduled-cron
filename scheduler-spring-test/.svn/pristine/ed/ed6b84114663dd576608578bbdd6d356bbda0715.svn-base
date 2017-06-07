@@ -1,0 +1,131 @@
+package com.elton.app.service.impl;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.elton.app.converter.CompanyConverter;
+import com.elton.app.dto.CompanyDTO;
+import com.elton.app.exception.CompanyException;
+import com.elton.app.exception.MultipleCompanyException;
+import com.elton.app.model.Company;
+import com.elton.app.repository.CompanyRepository;
+import com.elton.app.service.CompanyService;
+
+@Transactional(readOnly = true)
+@Service
+public class CompanyServiceImpl implements CompanyService{
+
+	@Autowired
+	private CompanyRepository repositorio;
+
+	private static final String RAZAO_SOCIAL_OBRIGATORIO = "A Razao Social é obrigatório.";
+	private static final String NOME_FANTASIA_OBRIGATORIO = "O Nome Fantasia é obrigatório.";
+	private static final String CNPJ_OBRIGATORIO = "O Cnpj é obrigatório.";
+	private static final String INSCRICAO_ESTADUAL_OBRIGATORIO = "A Inscrição estadual é obrigatório.";
+	private static final String lOCK_OPTIMISTIC = "Entidade desatualizada, favor atualizar a página para concluir alteração.";
+
+	@Override
+	public List<CompanyDTO> buscarPorFiltro(final CompanyDTO company) {
+		final CompanyDTO entidade= new CompanyDTO();
+		entidade.setCnpj("teste");
+		entidade.setStateInscription("teste");
+		entidade.setFantasyName("teste");
+		entidade.setSocialReason("teste");
+		final List<CompanyDTO> lista= new ArrayList<CompanyDTO>();
+		lista.add(entidade);
+		return lista;
+	}
+
+	@Override
+	public CompanyDTO get(final Long id) {
+		return CompanyConverter.toCompanyDTO(repositorio.findOne(id));
+	}
+
+	@Transactional(readOnly = false)
+	@Override
+	public CompanyDTO persist(final CompanyDTO company) {
+		checkException(validadePersistCompany(company));
+		return CompanyConverter.toCompanyDTO(repositorio.save(CompanyConverter.toCompany(company)));
+	}
+
+	@Transactional(readOnly = false)
+	@Override
+	public CompanyDTO merge(final CompanyDTO company) {
+		final Company companyModel= CompanyConverter.toCompany(company);
+		companyModel.setLastUpdateTime(new Date());
+		checkException(validadeUpdateCompany(company));
+		return CompanyConverter.toCompanyDTO(repositorio.save(companyModel));
+	}
+
+	@Transactional(readOnly = false)
+	@Override
+	public void delete(final Long id) {
+		repositorio.delete(id);
+	}
+
+	@Override
+	public List<CompanyDTO> findAll() {
+		return CompanyConverter.toListCompanyDTO((List<Company>) repositorio.findAll());
+	}
+
+	private void checkException(final ArrayList<CompanyException> exceptions) {
+		if (!exceptions.isEmpty()) {
+			throw new MultipleCompanyException(exceptions);
+		}
+	}
+
+	private ArrayList<CompanyException> validadePersistCompany(final CompanyDTO company) {
+		final ArrayList<CompanyException> errors = new ArrayList<CompanyException>();
+		validateRazaoSocial(company, errors);
+		validateNomeFantasia(company, errors);
+		validateCnpj(company, errors);
+		validateInscEstadual(company, errors);
+		return errors;
+	}
+
+	private ArrayList<CompanyException> validadeUpdateCompany(final CompanyDTO company) {
+		final ArrayList<CompanyException> errors = new ArrayList<CompanyException>();
+		validateRazaoSocial(company, errors);
+		validateNomeFantasia(company, errors);
+		validateCnpj(company, errors);
+		validateInscEstadual(company, errors);
+		validateLockOptimistic(company, errors);
+		return errors;
+	}
+
+	private void validateRazaoSocial(final CompanyDTO company, final ArrayList<CompanyException> errors) {
+		if (StringUtils.isBlank(company.getSocialReason())) {
+			errors.add(new CompanyException(RAZAO_SOCIAL_OBRIGATORIO));
+		}
+	}
+
+	private void validateNomeFantasia(final CompanyDTO company, final ArrayList<CompanyException> errors) {
+		if (StringUtils.isBlank(company.getFantasyName())) {
+			errors.add(new CompanyException(NOME_FANTASIA_OBRIGATORIO));
+		}
+	}
+
+	private void validateCnpj(final CompanyDTO company, final ArrayList<CompanyException> errors) {
+		if (StringUtils.isBlank(company.getCnpj())) {
+			errors.add(new CompanyException(CNPJ_OBRIGATORIO));
+		}
+	}
+
+	private void validateInscEstadual(final CompanyDTO company, final ArrayList<CompanyException> errors) {
+		if (StringUtils.isBlank(company.getStateInscription())) {
+			errors.add(new CompanyException(INSCRICAO_ESTADUAL_OBRIGATORIO));
+		}
+	}
+
+	private void validateLockOptimistic(final CompanyDTO company, final ArrayList<CompanyException> errors) {
+		if (!repositorio.findOne(company.getId()).getVersion().equals(company.getVersion()) ) {
+			errors.add(new CompanyException(lOCK_OPTIMISTIC));
+		}
+	}
+}

@@ -1,0 +1,29 @@
+package com.elton.app.exception;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Classe para varrer a excecao e retornar os erros
+ */
+public class CompanyExceptionHandler {
+
+	public static List<String> getExcetionError(final Exception e){
+		final StringBuilder excecao = new StringBuilder();
+		final List<String> listaExcessao= new ArrayList<String>();
+		if (e instanceof MultipleCompanyException) {
+			final MultipleCompanyException me = (MultipleCompanyException) e;
+			for (final CompanyException exception : me.getExceptions()) {
+				listaExcessao.add(exception.getMessage());
+			}
+		}else if (e instanceof CompanyException){
+			final CompanyException exception = (CompanyException) e;
+			listaExcessao.add(exception.getMessage());
+		}else{
+			excecao.append("erro generico");
+		}
+
+		return listaExcessao;
+	}
+
+}

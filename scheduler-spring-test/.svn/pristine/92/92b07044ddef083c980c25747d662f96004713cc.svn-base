@@ -1,0 +1,140 @@
+package com.elton.app.model;
+
+import java.io.Serializable;
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Version;
+
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+@Entity
+@Table(name = "EMPRESA")
+public class Company implements Serializable{
+
+	private static final long serialVersionUID = 3842442284453671038L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+
+	@Column(name = "EMPR_RZ_SOCIAL", nullable = false, length = 400)
+	private String socialReason;
+
+	@Column(name = "EMPR_NM_FANTASIA", nullable = false, length = 400)
+	private String fantasyName;
+
+	@Column(name = "EMPR_CD_CNPJ", nullable = false, length = 400)
+	private String cnpj;
+
+	@Column(name = "EMPR_IC_ESTADUAL", nullable = false, length = 400)
+	private String stateInscription;
+
+	@Column(name = "EMPR_CR_TIME")
+	@Temporal(TemporalType.DATE)
+	private Date creationTime;
+
+	@Column(name = "EMPR_UP_TIME")
+	@Temporal(TemporalType.DATE)
+	private Date lastUpdateTime;
+
+	@Version
+	@Column(name = "EMPR_SQ_VERSAO", nullable = false, precision = 10, scale = 0, length = 22)
+	private Long version;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(final Long id) {
+		this.id = id;
+	}
+
+	public String getSocialReason() {
+		return socialReason;
+	}
+
+	public void setSocialReason(final String socialReason) {
+		this.socialReason = socialReason;
+	}
+
+	public String getFantasyName() {
+		return fantasyName;
+	}
+
+	public void setFantasyName(final String fantasyName) {
+		this.fantasyName = fantasyName;
+	}
+
+	public String getCnpj() {
+		return cnpj;
+	}
+
+	public void setCnpj(final String cnpj) {
+		this.cnpj = cnpj;
+	}
+
+	public String getStateInscription() {
+		return stateInscription;
+	}
+
+	public void setStateInscription(final String stateInscription) {
+		this.stateInscription = stateInscription;
+	}
+
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(final Long version) {
+		this.version = version;
+	}
+
+	public Date getCreationTime() {
+		return creationTime;
+	}
+
+	public void setCreationTime(final Date creationTime) {
+		this.creationTime = creationTime;
+	}
+
+	public Date getLastUpdateTime() {
+		return lastUpdateTime;
+	}
+
+	public void setLastUpdateTime(final Date lastUpdateTime) {
+		this.lastUpdateTime = lastUpdateTime;
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder().append(getId()).append(getSocialReason()).append(getFantasyName())
+				.append(getCnpj()).append(getStateInscription()).append(getCreationTime()).append(getLastUpdateTime()).toHashCode();
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (obj.getClass() != getClass()) {
+			return false;
+		}
+
+		final Company rhs = (Company) obj;
+		return new EqualsBuilder().append(getId(), rhs.getId()).append(getSocialReason(), rhs.getSocialReason())
+				.append(getFantasyName(), rhs.getFantasyName())
+				.append(getCnpj(), rhs.getCnpj())
+				.append(getStateInscription(), rhs.getStateInscription())
+				.append(getCreationTime(), rhs.getCreationTime())
+				.append(getLastUpdateTime(), rhs.getLastUpdateTime()).isEquals();
+	}
+}
